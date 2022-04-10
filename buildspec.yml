@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+
+  pre_build:
+    commands:
+      - docker build -t dhomane/react-test -f ./client/Dockerfile.dev ./client
+    
+  build:
+    commands:
+      - echo Build started on `date`
+      - docker run -e CI=true dhomane/react-test npm test
+      
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - docker build -t dhomane/multi-client ./client
+      - docker build -t dhomane/multi-nginx ./nginx
+      - docker build -t dhomane/multi-server ./server
+      - docker build -t dhomane/multi-worker ./worker
+      # Log in to the docker CLI
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+      # Take those images and push them to docker hub
+      - docker push dhomane/multi-client
+      - docker push dhomane/multi-nginx
+      - docker push dhomane/multi-server
+      - docker push dhomane/multi-worker
