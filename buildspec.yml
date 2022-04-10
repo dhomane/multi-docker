@@ -4,7 +4,7 @@ phases:
 
   pre_build:
     commands:
-      # - docker build -t dhomane/react-test -f ./client/Dockerfile.dev ./client
+      - docker build -t dhomane/react-test -f ./client/Dockerfile.dev ./client
     
   build:
     commands:
